@@ -1,0 +1,120 @@
+article{
+    margin: 20px;
+}
+p{
+    text-indent: 20px;
+}
+
+
+
+:root{
+    --navColor: rgb(100,150,250);
+    --textColor: var(--navColor);
+    --hColor: rgb(200,255,0);
+}
+h1, h2, h3, h4{
+    color: var(--hColor);
+}
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+body{
+    background-color: rgb(33, 33, 33);
+    color: var(--textColor);
+}
+nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 10vh;
+    background-color: black;
+}
+.logo{
+
+    color: var(--navColor);
+    letter-spacing: 0.2em;
+    font-size: 16px;
+}
+.logo h4{
+    color: var(--navColor);
+}
+.navLinks{
+    display: flex;
+    justify-content: space-around;
+    width: 70%;
+}
+.navLinks li{
+    list-style: none;
+
+}
+.navLinks a{
+    color: var(--navColor);
+    font-weight: bold;
+    letter-spacing: 2px;
+    font-size: 20px;
+}
+.menuIcon{
+    display: none;
+}
+
+#firstLineHamb{
+    background-color:var(--navColor);
+    width: 10px;
+    height: 5px;
+    margin: 5px;
+}
+#secondLineHamb{
+    background-color:var(--navColor);
+    width: 30px;
+    height: 5px;
+    margin: 5px;
+}
+#thirdLineHamb{
+    background-color:var(--navColor);
+    width: 50px;
+    height: 5px;
+    margin: 5px;
+}
+@media screen and (max-width: 900px){
+    .navLinks{
+        width: 140%;
+    }
+
+}
+@media screen and (max-width: 580px){
+    body{
+        overflow-x: hidden;
+    }
+    .navLinks{
+        position: absolute;
+        left: 0;
+        height: 90vh;
+        top: 10vh;
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: rgb(44,44,44);
+        width: 40%;
+        transform: translateX(-100%);
+        transition: transform 1.2s ease-in;
+    }
+    .navLinks li{
+        opacity: 0;
+    }
+    .menuIcon{
+        display: block;
+        cursor: pointer;
+    }
+}
+/*
+This one will be toggled with js
+*/
+.navActive{
+    transform: translateX(0);
+}
+
+nav ul li a.active{
+    text-decoration: underline;
+}
