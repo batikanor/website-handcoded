@@ -1,0 +1,588 @@
+<?php 
+
+function delete_files($target) {
+    if(is_dir($target)){
+        $files = glob( $target . '*', GLOB_MARK );
+
+        foreach( $files as $file ){
+            delete_files( $file );      
+        }
+
+        rmdir( $target );
+    } elseif(is_file($target)) {
+        unlink( $target );  
+    }
+}
+function checkRemoteFile($url)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,$url);
+    // don't download content
+    curl_setopt($ch, CURLOPT_NOBODY, 1);
+    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+    $result = curl_exec($ch);
+    curl_close($ch);
+    if($result !== FALSE)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+
+if ((isset($_GET['deleteall']))&&(isset($_GET['hash']))&&(isset($_GET['admin']))&&($_GET['deleteall']="del")) {
+$flippdf = $_SERVER["DOCUMENT_ROOT"]."/web/files/uploads/".$_GET['hash'];
+if (unlink($flippdf)) { echo "PDF deleted<br>"; } else { echo "PDF Removed<br>";}; //delete PDF
+sleep(1);
+$flipzip = $_SERVER["DOCUMENT_ROOT"]."/web/server/packages/".substr($_GET['hash'],0,-4).".zip";
+if (unlink($flipzip)) { echo "ZIP deleted<br>"; } else { echo "Zip Removed<br>"; }; //delete ZIP
+sleep(1);
+$flipdir = $_SERVER["DOCUMENT_ROOT"]."/web/files/flipbooks/".$_GET['hash'];
+if (delete_files($flipdir))  { echo "FlipBook Deleted"; } else { echo "FlipBook Removed<br>"; }  //delete FLIP
+sleep(1);
+$flippack = $_SERVER["DOCUMENT_ROOT"]."/web/server/packages/".substr($_GET['hash'],0,-4);
+if (delete_files($flippack))  { echo "Pack Deleted<br>"; } else { echo "Pack Removed<br><br><a href=\"/\">Go Home</a>"; }  //delete PACK
+
+//echo $flipdir.'<br>';
+//echo $flippack.'<br>';
+//echo "Deleted";
+//header('Location: https://www.flipbookpdf.net');
+exit;
+}
+
+if (checkRemoteFile("https://www.flipbookpdf.net/web/files/flipbooks/".$_GET['hash']."/2.jpg")) {
+list($widthimg, $heightimg, $typeimg, $attrimg) = getimagesize($_SERVER["DOCUMENT_ROOT"]."/web/files/flipbooks/".$_GET['hash']."/2.jpg");
+if (($this->cfg->widthimg=="") or ($this->cfg->widthimg=="null")){   
+$this->cfg->widthimg=$widthimg;
+$this->cfg->heightimg=$heightimg;
+}
+
+if (($this->cfg->show_format=="") or ($this->cfg->show_format=="null")){     
+       if ($widthimg==$heightimg) {
+       $this->cfg->show_format=2;
+        }
+        if ($widthimg>$heightimg) {
+       $this->cfg->show_format=0;
+        }
+       if ($widthimg<$heightimg) {
+       $this->cfg->show_format=1;
+        }
+        }
+} else {
+
+list($widthimg, $heightimg, $typeimg, $attrimg) = getimagesize($_SERVER["DOCUMENT_ROOT"]."/web/files/flipbooks/".$_GET['hash']."/1.jpg");
+if (($this->cfg->widthimg=="") or ($this->cfg->widthimg=="null")){   
+$this->cfg->widthimg=$widthimg;
+$this->cfg->heightimg=$heightimg;
+}
+
+if (($this->cfg->show_format=="") or ($this->cfg->show_format=="null")){     
+       if ($widthimg==$heightimg) {
+       $this->cfg->show_format=2;
+        }
+        if ($widthimg>$heightimg) {
+       $this->cfg->show_format=0;
+        }
+       if ($widthimg<$heightimg) {
+       $this->cfg->show_format=1;
+        }
+        }
+}
+
+
+?>
+
+<!doctype html>
+<html lang="en">
+<head>
+    <title><?=$brand?></title>
+    <meta name="viewport" content="width = 1050, user-scalable = no" />
+    <meta property="og:image" content="https://www.flipbookpdf.net/web/files/flipbooks/<?=$_GET['hash']?>/1.jpg">
+    <link href='https://fonts.googleapis.com/css?family=Indie+Flower|Open+Sans:400,700|Ubuntu:400,700|Great+Vibes' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/extras/jquery.min.1.7.js"></script>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/extras/jquery-ui-1.8.20.full.min.js"></script>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/extras/modernizr.2.5.3.min.js"></script>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/lib/hash.js"></script>
+
+    <script type="text/javascript">
+        var flipbookcfg={
+            url: <?=json_encode($url)?>,
+            cover: <?=json_encode($dcover)?>,
+            numPages: <?=json_encode($numPages)?>,
+            textTip: <?=json_encode($tip)?>,
+            background: <?=json_encode($this->cfg->background)?>,
+            showSlider: <?=json_encode($this->cfg->show_slider)?>,
+            showSocial: <?=json_encode($this->cfg->show_social)?>,
+            showformat: <?=json_encode($this->cfg->show_format)?>,
+            companyLogo: <?=json_encode($this->cfg->company_logo)?>,
+            title: <?=json_encode(htmlentities($this->cfg->title, ENT_QUOTES))?>,
+            tagtitle: <?=json_encode(htmlentities($this->cfg->tagtitle, ENT_QUOTES))?>,
+            description: <?=json_encode(htmlentities($this->cfg->description, ENT_QUOTES))?>,
+            showDownload: <?=json_encode($this->cfg->show_download)?>,
+            backlink: <?=json_encode($this->cfg->back_link)?>,
+            opacity: <?=json_encode($this->cfg->opacity)?>,
+            name: <?=json_encode($this->cfg->name)?>,
+            direction: <?=json_encode($this->cfg->direction)?>, 
+            flipsound: <?=json_encode($this->cfg->flipsound)?>, 
+            widthimg: <?= json_encode($this->cfg->widthimg)?>,
+            heightimg: <?=json_encode($this->cfg->heightimg)?> 
+        };
+     //   var  widthimg = <?php echo $widthimg ?>; 
+     //   var  heightimg = <?php echo $heightimg ?>; 
+    </script>
+    <style>
+    .logo-backs {
+    opacity: <?php echo ($this->cfg->opacity); ?>;
+}
+.form-element1 input[type=text], .form-element1 select, .form-element1 textarea {
+border: 1px solid gray;
+padding: 5px;
+min-width: 74px;
+resize: vertical;
+}
+
+.form-element1 {
+margin-top: 10px;
+margin-bottom: 12px;
+margin-left: 65px;
+}
+
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+  .config {
+    width:81px;
+  }
+  .down-pdf{
+    width:84px;
+  }
+    .fs{
+    width:72px;
+  }
+  .zoom-icon{
+    width: 66px!important;
+    height: 66px!important;
+    background-size: 264px 66px!important;
+  }
+  .zoom-icon-in.zoom-icon-in-hover {
+    background-position: -66px 0;
+  }
+  .zoom-icon-out {
+    background-position: -131px 0;
+}
+
+#prev {
+    width: 87px;
+    height: 78px;
+    background-size: 87px 78px;
+}
+#next {
+    width: 87px;
+    height: 78px;
+    background-size: 87px 78px;
+}
+
+.controls-pdf {
+    top: 30px;
+}
+  
+}
+@media only screen and (min-device-width: 481px) {
+.config {
+    width:27px;
+  }
+  .down-pdf{
+    width:28px;
+  }
+  .fs{
+    width:24px;
+  }  
+  
+}
+
+<?php if ($this->cfg->show_format=="10"): ?>
+.magazine-viewport .container{
+	width:<?php echo ($this->cfg->widthimg); ?>px;
+	height:<?php echo ($this->cfg->heightimg);?>px;
+}
+
+.magazine-viewport .magazine{
+	width:<?php echo ($this->cfg->widthimg); ?>px;
+	height:<?php echo ($this->cfg->heightimg);?>px;
+	left:-<?php echo ($this->cfg->widthimg); ?>px;
+}
+
+.magazine-viewport .page{
+	width:<?php echo ($this->cfg->widthimg); ?>px;
+	height:<?php echo ($this->cfg->heightimg);?>px;
+}
+
+.magazine-viewport .previous-button{
+	height:<?php echo ($this->cfg->heightimg);?>px;
+}
+<?php endif; ?>
+
+<?php if ($this->cfg->show_format=="11"): ?>
+.magazine-viewport .container{
+	width:<?php echo 2*($this->cfg->widthimg); ?>px;
+	height:<?php echo ($this->cfg->heightimg);?>px;
+}
+
+.magazine-viewport .magazine{
+	width:<?php echo 2*($this->cfg->widthimg); ?>px;
+	height:<?php echo ($this->cfg->heightimg);?>px;
+	left:-<?php echo ($this->cfg->widthimg); ?>px;
+}
+
+.magazine-viewport .page{
+	width:<?php echo ($this->cfg->widthimg); ?>px;
+	height:<?php echo ($this->cfg->heightimg);?>px;
+}
+
+.magazine-viewport .previous-button{
+	height:<?php echo ($this->cfg->heightimg);?>px;
+}
+<?php endif; ?>
+
+
+</style>
+</head>
+<body>
+ 
+
+
+<div class="logo-backs"></div>
+
+<?php if (($this->cfg->flipsound=="1")||($this->cfg->flipsound==null)||($this->cfg->flipsound=="null")): ?>
+<audio id="audio" src="<?=$baseUrl?>/flipbook/pics/page-flip.mp3"></audio>
+<?php endif; ?>
+<?php if ($this->cfg->flipsound=="0"): ?>
+<audio id="audio" src="<?=$baseUrl?>/flipbook/pics/page-mute.mp3"></audio>
+<?php endif; ?>
+<a href="<?php echo $this->cfg->back_link; ?>"><img src="<?php if (checkRemoteFile($this->cfg->company_logo)) echo $this->cfg->company_logo;  ?>" style="position: absolute;bottom:15px;left: 15px;z-index: 100;height: auto; width: auto; max-width: 16%; max-height: 19%;"></a>
+
+
+    <div class="flipbook-title" style="display: none;">
+        <h1></h1>
+        <h2></h2>
+        <p></p>
+    </div>
+    
+
+
+
+    
+
+    <?php
+        if ($showConfig) {
+            include_once(dirname(__FILE__).'/files/widgets/flipbook-config.php');
+        }
+    ?>
+
+    <div id="canvas">
+
+        <!--<div class="close-icon">
+            <img src="<?=$baseUrl?>/flipbook/pics/close.png" style="cursor: pointer;" />
+        </div>
+        -->
+
+        
+        <div class="controls-pdf">
+        <div class="controlzoom" style="display:none">
+        <a href="#" id="zoomin" style="font-size:16px; color:#808080; text-decoration: none; font-weight:bold"><img src="<?=$baseUrl?>/flipbook/pics/zoomin.png" /></a>
+         <a href="#" id="zoomout" style="font-size:16px; color:#808080; text-decoration: none; font-weight:bold"><img src="<?=$baseUrl?>/flipbook/pics/zoomout.png" /></a>
+
+</div>
+        
+            <?php if ($showConfig): ?>
+                <a href="#" onclick="$('.modal-config').fadeIn();"><img class="config" src="<?=$baseUrl?>/flipbook/pics/config.png" /></a>
+            <?php endif; ?>
+            
+             
+            <a href="<?=$urlDownload?>" target="_blank" ><img class="down-pdf" src="<?=$baseUrl?>/flipbook/pics/down-pdf.png" /></a>
+            <div class="zoom-icon zoom-icon-in"></div>
+            &nbsp;&nbsp;<input type="image" class="fs" src="<?=$baseUrl?>/flipbook/pics/fs.png" onclick="openFullscreen();"/>
+             <a href="#" id="prev"></a>
+            <a href="#" id="next"></a>
+        </div>
+
+        <div class="magazine-viewport" id="flipfull">
+         
+        
+            <div class="container">
+                <div class="magazine">
+                    <?php if ($dcover>0): ?>
+                        <img src="<?=$urlPortada?>" />
+                    <?php endif; ?>
+
+                    <div ignore="1" class="next-button"></div>
+                    <div ignore="1" class="previous-button"></div>
+                </div>
+            </div>
+            <div class="bottom">
+                <div id="slider-bar" class="turnjs-slider">
+                        <div id="slider"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       
+    
+<?php if ($this->cfg->show_format=="1"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazine.js', '<?=$baseUrl?>/flipbook/css/magazine.css'],
+            complete: loadApp
+        });
+    </script>
+<?php endif; ?>    
+    
+<?php if ($this->cfg->show_format=="0"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core1.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazine.js', '<?=$baseUrl?>/flipbook/css/magazine1.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>    
+
+<?php if ($this->cfg->show_format=="2"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core2.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazine.js', '<?=$baseUrl?>/flipbook/css/magazine2.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="3"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core3.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazine.js', '<?=$baseUrl?>/flipbook/css/magazine3.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="4"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core4.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazine.js', '<?=$baseUrl?>/flipbook/css/magazine4.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="5"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core_single.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazineSINGLE.js', '<?=$baseUrl?>/flipbook/css/magazine_single.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="6"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core3_single.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazineSINGLE.js', '<?=$baseUrl?>/flipbook/css/magazine3_single.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="7"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core1_single.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazineSINGLE.js', '<?=$baseUrl?>/flipbook/css/magazine1_single.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="8"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core4_single.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazineSINGLE.js', '<?=$baseUrl?>/flipbook/css/magazine4_single.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+<?php if ($this->cfg->show_format=="9"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core2_single.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazineSINGLE.js', '<?=$baseUrl?>/flipbook/css/magazine2_single.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+
+<?php if ($this->cfg->show_format=="10"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core5_single.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazineSINGLE.js', '<?=$baseUrl?>/flipbook/css/style.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+
+<?php if ($this->cfg->show_format=="11"): ?>
+    <script type="text/javascript" src="<?=$baseUrl?>/flipbook/js/core5.js"></script>
+    <script type="text/javascript">
+        yepnope({
+            test: Modernizr.csstransforms,
+            yep: ['<?=$baseUrl?>/flipbook/lib/turn.min.js'],
+            nope: ['<?=$baseUrl?>/flipbook/lib/turn.html4.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.html4.css'],
+            both: ['<?=$baseUrl?>/flipbook/lib/zoom.min.js', '<?=$baseUrl?>/flipbook/css/jquery.ui.css', '<?=$baseUrl?>/flipbook/js/magazine.js', '<?=$baseUrl?>/flipbook/css/style.css'],
+            complete: loadApp
+        });
+    </script>    
+<?php endif; ?>  
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-144220429-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-144220429-1');
+</script>    
+    
+<?php if ($this->cfg->show_social != "0"): ?>
+<script type="text/javascript" src="https://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5d6ec09e6b312392"></script>
+<?php endif; ?> 
+
+       
+       <script>
+var elem = document.getElementById("flipfull");
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) { /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+}
+</script>
+
+<?php 
+$servername = "localhost";
+$username = "flipbo7_book";
+$password = "Renzina51!";
+$dbname = "flipbo7_book";
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Checking mysql connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+$url =  "https://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+
+$escaped_url = htmlspecialchars( $url, ENT_QUOTES, 'UTF-8' );
+
+$escaped_url1=str_replace("www.flipbook", "flipbook", $escaped_url);
+
+$sql2 = "SELECT data, visits FROM flipbo7_book.usage WHERE pc="."'".$escaped_url1."' and pc not like '%FBP%' limit 1";
+
+$result2=mysqli_query($conn,$sql2);
+
+
+
+if ($result2->num_rows > 0) {
+    // output data of each row
+    while($row2 = $result2->fetch_assoc()) {
+        $scadenza= strtotime($row2["data"]);
+        $scadenzanew= date('Y-m-d',$scadenza);
+        $visite=$row2["visits"];
+    }
+
+
+ if ((($scadenzanew) < date('Y-m-d', strtotime('-7 days')))||($visite>100)) {
+ echo "<div style=\"position: absolute; top: 60px; right: 2px; width: 350px; height: auto!important; text-align: right; overflow: hidden; z-index: 1;\"><script async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\"></script>
+<ins class=\"adsbygoogle\"
+     style=\"display:inline-block;width:300px;height:600px\"
+     data-ad-client=\"ca-pub-4875027129723585\"
+     data-ad-slot=\"9992033763\"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>";
+} 
+}
+?>  
+
+   
+</body>
+</html>
+
+<?php 
+// Creating mysql connection
+
+
+//echo $escaped_url1;
+//Adds one to the counter
+$sql="UPDATE flipbo7_book.usage SET visits = visits + 1 where pc="."'".$escaped_url1."' ";
+//echo "<br>";
+//echo $sql;
+$conn->query($sql);
+mysqli_close($conn);
+
+?>

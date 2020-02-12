@@ -1,4 +1,3 @@
-
 document.querySelector(".menuIcon").onclick = function(){
     //This is an anonymous function
     
