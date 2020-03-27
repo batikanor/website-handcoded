@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Batikanor - PHP</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body style="background-color:LightGray;">
+        
+        <div class="jumbotron text-center">
+            <h1>PHP Programing language</h1>
+            <!--
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a class="nav-link" href="#">1. Introduction</a>
+                    </li>
+                <li class="list-group-item">Second item</li>
+                <li class="list-group-item">Third item</li>
+            </ul> 
+            -->
+            <table class="table table-hover table-striped table-dark">
+              
+                <thead>
+
+                    <tr>
+                        <th>Subject</th>
+                        <th>Level of Understanding</th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><abbr title="HyperText Markup Language">HTML</abbr></td>
+                        <td>Basic</td>
+                    </tr>
+                    <tr>
+                        <td>Any high level programming language (C, Python, Java, ...)</td>
+                        <td>Intermediate (basics, conditions, conditional and logical operators, ...)</td>
+                    </tr>
+                </tbody>
+               
+            </table>
+          
+          
+          
+        
+            
+        </div>
+        
+        <div class="container-fluid border">
+                <em>PHP is a server-side programming language.</em>
+            It sits on the web server and allows interaction with the client.
+            PHP runs on a web server.
+            <br>
+            A Web server usually comes with PHP.
+            <br>
+            On a terminal run the following command: 
+
+
+            <pre>
+php -S localhost:4000
+            </pre>
+            
+            An example output from Ubuntu 18.04:
+            <pre>
+Listening on http://localhost:4000
+Document root is /home/$USER
+Press <kbd>Ctrl-C</kbd> to quit.
+            </pre>
+            
+            Create a folder called "www"
+            <pre>
+mkdir www
+            </pre>
+
+            and then open it up with the text editor of your selection
+            <pre>
+code www
+            </pre>
+
+            create a file <code>$FILENAME.php</code>
+            and then set up the basic HTML skeleton
+            <pre>
+&lt!DOCTYPE html&gt
+&lthtml&gt
+    &lthead&gt
+        &ltmeta charset="utf8"&gt;
+    &lt/head&gt;
+
+    &ltbody&gt;
+    &lt/body&gt;
+&lt/html&gt;
+
+            </pre>
+            Create a php tag inside of the body tag.
+            <pre>
+&lt?php
+    echo("Hello PHP!");
+?&gt
+            </pre>
+            Now check if it works, try opening the site with the web browser of your selection
+            <pre>
+firefox localhost:4000/www/$FILENAME.php
+            </pre>
+            <img src="Images/Selection_038.png" class="rounded">
+            <br>
+            The following code also works as expected:
+
+            <pre>
+&#x3C;?php
+    $ownerName = &#x22;Bat&#x131;kan&#x22;;
+    $university = &#x22;Turkish - German University&#x22;;
+    define(&#x27;PI&#x27;, 3.141592);
+    $address = array(&#x27;street&#x27; =&#x3E; &#x27;Sahinkaya cad.&#x27;,
+    &#x27;city&#x27; =&#x3E; &#x27;Istanbul&#x27;);
+
+?&#x3E;
+
+&#x3C;!DOCTYPE html&#x3E;
+&#x3C;html lang=&#x22;en&#x22;&#x3E;
+    &#x3C;head&#x3E;
+        &#x3C;meta charset=&#x22;utf8&#x22;&#x3E;
+        &#x3C;title&#x3E;batikanor-php&#x3C;/title&#x3E;
+    &#x3C;/head&#x3E;
+    &#x3C;body&#x3E;
+        &#x3C;p&#x3E; Hello, I&#x27;m &#x3C;?php echo $ownerName . &#x27; and I study at the &#x27; . $university ?&#x3E;&#x3C;/p&#x3E;
+
+    &#x3C;/body&#x3E;
+&#x3C;/html&#x3E;
+
+            </pre>
+            Now lets note the following methods and come up with an example implementation:
+            <br>
+            <ul>
+                <li>isset() : Determine if a variable is declared and is different than NULL</li>
+                <li>array_key_exists( mixed $key , array $array ) : 
+                    Checks if the given key or index exists in the array</li>
+            </ul>
+            
+            <hr>
+            <pre>
+&#x3C;?php
+    $ownerName = &#x22;Bat&#x131;kan&#x22;;
+    $university = &#x22;Turkish - German University&#x22;;
+    define(&#x27;PI&#x27;, 3.141592);
+    $address = array(&#x27;street&#x27; =&#x3E; &#x27;Sahinkaya cad.&#x27;,
+    &#x27;city&#x27; =&#x3E; &#x27;Istanbul&#x27;);
+
+?&#x3E;
+
+&#x3C;!DOCTYPE html&#x3E;
+&#x3C;html lang=&#x22;en&#x22;&#x3E;
+    &#x3C;head&#x3E;
+        &#x3C;meta charset=&#x22;utf8&#x22;&#x3E;
+        &#x3C;title&#x3E;batikanor-php&#x3C;/title&#x3E;
+    &#x3C;/head&#x3E;
+    &#x3C;body&#x3E;
+        &#x3C;p&#x3E; Hello, I&#x27;m &#x3C;?php echo $ownerName . &#x27; and I study at the &#x27; . $university ?&#x3E;&#x3C;/p&#x3E;
+        &#x3C;form action=&#x22;site.php&#x22; method=&#x22;get&#x22;&#x3E;
+            &#x3C;label&#x3E; Your name: &#x3C;/label&#x3E;
+            &#x3C;input type=&#x22;text&#x22; name=&#x22;name&#x22; placeholder=&#x22;Your Name&#x22;/&#x3E;
+            &#x3C;label&#x3E; Please input two numbers &#x3C;/label&#x3E;
+            &#x3C;input type=&#x22;text&#x22; name=&#x22;num1&#x22; placeholder=&#x22;0&#x22;/&#x3E;
+            &#x3C;input type=&#x22;text&#x22; name=&#x22;num1&#x22; placeholder=&#x22;0&#x22;/&#x3E;
+            &#x3C;input type=&#x22;submit&#x22; value=&#x22;Submit&#x22;/&#x3E;
+        &#x3C;/form&#x3E;
+
+        &#x3C;?php
+            if(isset($_GET) &#x26;&#x26; array_key_exists(&#x22;name&#x22;, $_GET))
+            {
+                $name = $_GET[&#x27;name&#x27;];
+                if(!empty($name))
+                {
+                    // When you use double quotes instead of single quotes, you can directly embed the variables.
+                    echo &#x22;Your name is $name &#x3C;br&#x3E;&#x22;;
+                }
+            }
+
+        ?&#x3E;
+    &#x3C;/body&#x3E;
+&#x3C;/html&#x3E;
+
+            </pre>
+            Now, after you open the page and fill all of these boxes with data, your address bar will look similar to this:
+            <pre>
+http://localhost:4000/www/site.php?name=&num1=4&num2=33
+            </pre>
+            You can clearly see that there are 3 different key-value pairs within the GET array, and you may also use the <code>count()</code> function to use this information.
+
+            <hr>
+            if, else if and switch blocks, printf() and strlen() function very similar to the way they do on any other programming language. 
+            For the rest, just check the following codes out and I'm sure you have enough intuition to see what's going on.
+
+            <pre>
+&#x3C;?php
+    $ownerName = &#x22;Bat&#x131;kan&#x22;;
+    $university = &#x22;Turkish - German University&#x22;;
+    define(&#x27;PI&#x27;, 3.141592);
+    $address = array(&#x27;street&#x27; =&#x3E; &#x27;Sahinkaya cad.&#x27;,
+    &#x27;city&#x27; =&#x3E; &#x27;Istanbul&#x27;);
+
+?&#x3E;
+
+&#x3C;!DOCTYPE html&#x3E;
+&#x3C;html lang=&#x22;en&#x22;&#x3E;
+    &#x3C;head&#x3E;
+        &#x3C;meta charset=&#x22;utf8&#x22;&#x3E;
+        &#x3C;title&#x3E;batikanor-php&#x3C;/title&#x3E;
+    &#x3C;/head&#x3E;
+    &#x3C;body&#x3E;
+        &#x3C;p&#x3E; Hello, I&#x27;m &#x3C;?php echo $ownerName . &#x27; and I study at the &#x27; . $university ?&#x3E;&#x3C;/p&#x3E;
+        &#x3C;form action=&#x22;site.php&#x22; method=&#x22;get&#x22;&#x3E;
+            &#x3C;label&#x3E; Your name: &#x3C;/label&#x3E;
+            &#x3C;input type=&#x22;text&#x22; name=&#x22;name&#x22; placeholder=&#x22;Your Name&#x22;/&#x3E;
+            &#x3C;label&#x3E; Please input two numbers &#x3C;/label&#x3E;
+            &#x3C;input type=&#x22;text&#x22; name=&#x22;num1&#x22; placeholder=&#x22;0&#x22;/&#x3E;
+            &#x3C;input type=&#x22;text&#x22; name=&#x22;num2&#x22; placeholder=&#x22;0&#x22;/&#x3E;
+            &#x3C;input type=&#x22;submit&#x22; value=&#x22;Submit&#x22;/&#x3E;
+        &#x3C;/form&#x3E;
+
+        &#x3C;?php
+            if(isset($_GET) &#x26;&#x26; array_key_exists(&#x22;name&#x22;, $_GET))
+            {
+                $name = $_GET[&#x27;name&#x27;];
+                if(!empty($name))
+                {
+                    // When you use double quotes instead of single quotes, you can directly embed the variables.
+                    echo &#x22;Your name is $name &#x3C;br&#x3E;&#x22;;
+                }
+            }
+            if(count($_GET &#x3E;= 3))
+            {
+                $num1 = $_GET[&#x27;num1&#x27;];
+                $num2 = $_GET[&#x27;num2&#x27;];
+                echo &#x22;Sum of the two numbers you entered is &#x22; . ($num1 + $num2);
+                // there are many other operations that can be done within php, but it is best you if you learn them when you need them
+                
+            }
+            echo &#x22;&#x3C;br&#x3E;&#x22;;
+            $strToTrim = &#x22;      -  spaces on both sides  -        &#x22;;
+            printf(&#x22;%s&#x22;, $strToTrim);
+            printf(&#x22;size after left trim: %d&#x22;, strlen(ltrim($strToTrim)));
+            printf(&#x22;size after full trim: %s&#x22;, strlen(trim($strToTrim)));
+            printf(&#x22;... And this is a substring of it: %s &#x3C;br&#x3E;&#x22;, substr($strToTrim, 11, 3));
+
+            $cities = array(&#x27;Istanbul&#x27;, &#x27;Ankara&#x27;, &#x27;Mugla&#x27;, &#x27;Izmir&#x27;);
+            echo &#x27;Capital city of Turkey is: &#x27; . $cities[1] . &#x27;&#x3C;br&#x3E;&#x27; ;
+            $cities[4] = &#x27;Antalya&#x27;;
+            foreach($cities as $ci)
+            {
+                printf(&#x22;One of the cities is : %s &#x3C;br&#x3E;&#x22;, $ci);
+            }
+            foreach($address as $k =&#x3E; $v)
+            {
+                printf(&#x22;%s of Turkish - German University is %s &#x3C;br&#x3E;&#x22;, $k, $v);
+            }
+            // You can also add arrays to one another, or sort arrays using sort (ascending), rsort (descending), asort(associative arrays(sort by value)), ksort (sort by key), arsort, krsort, &#x3C;div class=&#x22;&#x22;&#x3E;&#x3C;/div&#x3E;
+            
+            //multi dimnesional arrays
+            $lessons = array(array(&#x27;name&#x27; =&#x3E; &#x27;INF208&#x27;, &#x27;semester&#x27; =&#x3E; 3),
+            array(&#x27;name&#x27; =&#x3E; &#x27;INF101&#x27;, &#x27;semester&#x27; =&#x3E; 1));
+
+            printf(&#x22;%s &#x3C;br&#x3E;&#x22;, $lessons[0][name]);
+
+            foreach($lessons as $lesson)
+            {
+                foreach($lesson as $k =&#x3E; $v)
+                {
+                    printf(&#x22;%s of this lesson is %s &#x3C;br&#x3E;&#x22;, $k, $v);
+                }
+            }
+
+            //Or you could do a for loop in a similar way to any other language (for($i = 0; $i &#x3C; 10; $i++){})
+
+            // explode() splits a string by a string, implode joins array elements with a string
+            $str_space = &#x22;T A U&#x22;;
+            $arr_from_str = explode(&#x27; &#x27;, $str_space);
+            foreach($arr_from_str as $letter_hey)
+            {
+                echo &#x27;one of the letters is &#x27; . $letter_hey .&#x27;&#x3C;br&#x3E;&#x27;;
+            }
+            // now re-unite the string
+            $str_reunite = implode(&#x27; &#x27;, $arr_from_str);
+            printf(&#x27;imploded string: %s &#x3C;br&#x3E;&#x27;, $str_reunite);
+
+            // while and do-while loops also function as expected, no need to test them here, use them when needed and learn only then
+
+
+            //defining functions
+            
+            //4 and 4 are the default values for the parameters in this case, so if no value is passed they&#x27;ll be initialized with 3, 4
+            function multiplyNumbers($num1=3, $num2=4)
+            {
+                return $num1 * $num2 ;
+            }
+            echo multiplyNumbers(1) . &#x27;&#x3C;br&#x3E;&#x27;; //4
+            // Currently there is no way to pass arguments in PHP, so the next line is, for now, not practically implementable
+            // echo multiplyNumbers(,1) . &#x27;&#x3C;br&#x3E;&#x27;; //3
+            
+            echo multiplyNumbers() . &#x27;&#x3C;br&#x3E;&#x27;; // 12
+            echo multiplyNumbers(9,8) . &#x27;&#x3C;br&#x3E;&#x27;; // 72
+
+            // Please note that attributes are PASSED BY VALUE! (Not by reference)
+            
+
+            // Variadic functions... (as many arguments passed into an array as you wish)
+            function haveFun(...$vals)
+            {
+                
+                $sum = 0;
+                $mult = 1;
+                foreach($vals as $val)
+                {
+                    $sum += $val;
+                    $mult *= $val;
+                }
+                //print sum
+                echo &#x27;sum of values in function is... &#x27; . $sum . &#x27;&#x3C;br&#x3E;&#x27;;
+
+                //return an array containing sum, firstval, mult  
+                return array($sum, $vals[0], $mult);
+                
+            }
+            $funArr = haveFun(3,4,5,11); // 23
+            // list() takes values from an array and assigns them to variables
+            list($zzSum, $zzFirst, $zzMult) = $funArr;
+            
+            printf(&#x22;sum : %s, first : %s, mult : %s &#x3C;br&#x3E;&#x22;, $zzSum, $zzFirst, $zzMult);
+            
+            function alterNum($numy)
+            {
+                return $numy + pi();
+            }
+            $listy = [1,2,3,4];
+            // applies the function for every single value in array
+            $newListy = array_map(&#x27;alterNum&#x27;, $listy);
+            // print_r() prints human readable version of a variable... REALLY useful for testing.. So we will use this from now on...
+            // array_reduce() iteratively reduces to array to a single value using callbacks (so if function had 2 arguments and returned their multiplications, the reduced value for this list would become 24)
+            // array_filter() filters elements of an array using callbacks (i.e. if they return true)
+            print_r($newListy);
+
+            date_default_timezone_set(&#x27;Turkey/Istanbul&#x27;);
+            //check php documentation for character codes for dates
+            echo &#x27;Date: &#x27; . date(&#x27;I F d-m-Y g:i:s A&#x27;) . &#x27;&#x3C;br&#x3E;&#x27;;
+            
+
+        ?&#x3E;
+    &#x3C;/body&#x3E;
+&#x3C;/html&#x3E;
+
+            </pre>
+            <hr>
+            Of course, you don't have to write the whole php code explicitly inside your HTML block, you could write on a seperate file and include it aswell...
+            <br>
+            <pre>
+include 'myfile.php'
+            </pre>
+            At this point you can say that you KNOW PHP. But to make your knowledge practically useful, you may want to learn about the following topics for the sake of your future applications.
+            <ul>
+                <li>Exception handling</li>
+                <li>Database and database connection</li>
+                <li>Object-oriented PHP</li>
+                <li>...</li>
+            </ul>
+
+            <hr>
+
+        </div>
+
+
+        
+    </body>
+</html>
+
+
